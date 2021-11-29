@@ -277,6 +277,8 @@
             <permission>commit_resolution</permission>
             <permission>cancel_failed_pull</permission>
             <permission>encryption_tool</permission>
+            <permission>publish_status</permission>
+            <permission>publish_clear_lock</permission>
          </allowed-permissions>
       </rule>
       <rule regex="^/(?!site/website/index\.xml)(.*)">
@@ -303,6 +305,8 @@
             <permission>commit_resolution</permission>
             <permission>cancel_failed_pull</permission>
             <permission>encryption_tool</permission>
+            <permission>publish_status</permission>
+            <permission>publish_clear_lock</permission>
          </allowed-permissions>
       </rule>
       <rule regex=".*">
