@@ -147,10 +147,10 @@
                </icon>
             </control>
             <control>
-                <name>transcoded-video-picker</name>
-                <icon>
-                    <class>fa-video-camera</class>
-                </icon>
+               <name>transcoded-video-picker</name>
+               <icon>
+                  <class>fa-video-camera</class>
+               </icon>
             </control>
             <control>
                <name>label</name>
