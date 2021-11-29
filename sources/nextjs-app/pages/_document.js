@@ -29,7 +29,7 @@ class MyDocument extends Document {
           <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
           <meta name="theme-color" content="#000000" />
           <link rel="manifest" href={`${PUBLIC_URL}/manifest.json`} crossorigin="use-credentials" />
-          <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+          <link rel="shortcut icon" href={`${PUBLIC_URL}/favicon.ico`} />
 
           <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
           <title>Video Center</title>
