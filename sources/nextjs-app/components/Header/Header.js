@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
 import { connect } from 'react-redux';
-import { getDescriptor } from '@craftercms/redux';
+import { getDescriptor, getNav } from '@craftercms/redux';
 import { isNullOrUndefined } from 'util';
 
 import HeaderHolder from './HeaderStyle';
@@ -16,20 +16,26 @@ class Header extends Component {
     if (isNullOrUndefined(props.descriptors[this.levelDescriptorUrl])) {
       this.props.getDescriptor(this.levelDescriptorUrl);
     }
+
+    this.props.getNav('/site/website');
   }
 
   renderNavItems() {
     var rootId = '/';
+
+    console.log(this.props);
 
     return this.props.nav.childIds[rootId].map((id, i) => {
       var navItem = this.props.nav.entries[id];
 
       return (
         <li key={i} className="navigation__item">
-          <Link className="navigation__link navigation__link--apps" href={navItem.url}>
-            <span className="navigation__link--text">
-              {navItem.label}
-            </span>
+          <Link href={navItem.url}>
+            <a className="navigation__link navigation__link--apps">
+              <span className="navigation__link--text">
+                {navItem.label}
+              </span>
+            </a>
           </Link>
         </li>
       );
@@ -40,17 +46,18 @@ class Header extends Component {
     const logo = descriptor.component.siteLogo;
 
     return (
-      <Link
-        className="header__logo active" href="/"
-        style={{ backgroundImage: `url(${logo})` }}
-      >
-        Video Center
+      <Link href="/">
+        <a
+          className="header__logo active"
+          style={{ backgroundImage: `url(${logo})` }}
+        >Video Center</a>
       </Link>
     );
   }
 
   render() {
     const { nav, descriptors } = this.props;
+    console.log(this.props);
     const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
     return (
@@ -90,13 +97,17 @@ class Header extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  getDescriptor: url => dispatch(getDescriptor(url))
+  getDescriptor: url => dispatch(getDescriptor(url)),
+  getNav: url => dispatch(getNav(url))
 });
 
-const mapStateToProps = store => ({
-  nav: store.craftercms.navigation,
-  descriptors: store.craftercms.descriptors.entries,
-  headerGhost: store.header.headerGhost
-});
+const mapStateToProps = store => {
+  console.log(store);
+  return ({
+    nav: store.craftercms.navigation,
+    descriptors: store.craftercms.descriptors.entries,
+    headerGhost: store.header.headerGhost
+  });
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

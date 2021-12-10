@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,10 +11,10 @@ class HeaderSearch extends Component {
     modalVisible: false
   };
 
-  handleKeyPress = (e, history) => {
+  handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.setModalVisible(false);
-      history.push(`/search/${e.target.value}`);
+      window.location.href = `/search/${e.target.value}`;
     }
 
   };
@@ -46,13 +45,8 @@ class HeaderSearch extends Component {
         >
           <FontAwesomeIcon className="search__icon" icon={faSearch} />
 
-          <Route
-            render={({ history }) => (
-              <InputSearch
-                history={history}
-                handleKeyPress={this.handleKeyPress}
-              />
-            )}
+          <InputSearch
+            handleKeyPress={this.handleKeyPress}
           />
           <button className="ant-modal-close" onClick={() => this.setModalVisible(false)}>
             <span className="ant-modal-close-x"></span>
