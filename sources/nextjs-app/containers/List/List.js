@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { setVideoDocked } from '../../actions/videoPlayerActions';
-import VideoCategories from '../../components/VideoCategories/VideoCategories.js';
+import VideoCategories from '../../components/VideoCategories/VideoCategories';
 
 class Channel extends Component {
   componentWillMount() {
@@ -14,13 +14,13 @@ class Channel extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (this.props.match.params.id !== newProps.match.params.id) {
+    if (this.props.params.categoryName !== newProps.params.categoryName) {
       this.getInfo(newProps);
     }
   }
 
   getInfo(props) {
-    var params = props.match.params,
+    var params = props.params,
       category = {
         key: '',
         value: params.categoryName,
