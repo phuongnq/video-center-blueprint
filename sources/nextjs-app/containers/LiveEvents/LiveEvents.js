@@ -8,7 +8,7 @@ class LiveEvents extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchId: this.props.match.params.query,
+      searchId: '',
       categories: [
         {
           key: 'active-events',
