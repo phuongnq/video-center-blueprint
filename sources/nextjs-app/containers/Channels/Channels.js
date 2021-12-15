@@ -4,13 +4,13 @@ import ChannelsHolder from './ChannelsStyle';
 
 import { setVideoDocked } from '../../actions/videoPlayerActions';
 
-import VideoCategories from '../../components/VideoCategories/VideoCategories.js';
+import VideoCategories from '../../components/VideoCategories/VideoCategories';
 
 class Channels extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchId: this.props.match.params.query,
+      searchId: '',
       categories: [
         {
           key: 'featured-channels',
