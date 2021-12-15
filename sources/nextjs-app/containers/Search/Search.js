@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import SearchHolder from './SearchStyle';
-import VideoCategories from '../../components/VideoCategories/VideoCategories.js';
+import VideoCategories from '../../components/VideoCategories/VideoCategories';
 import { setVideoDocked } from '../../actions/videoPlayerActions';
 import { isNullOrUndefined } from 'util';
 
@@ -15,7 +15,7 @@ class Search extends Component {
   constructor(props) {
     super(props);
 
-    this.searchId = this.props.match.params.query;
+    this.searchId = this.query;
 
     this.state = {
       categories: this.setCategories(this.searchId)
@@ -38,8 +38,8 @@ class Search extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    let value = newProps.match.params.query,
-      newCategories = this.setCategories(value);
+    const value = newProps.query;
+    const newCategories = this.setCategories(value);
 
     this.searchInput.value = value ?? '';
     this.setState({ categories: newCategories });
@@ -114,8 +114,8 @@ class Search extends Component {
   }
 
   onChange(event) {
-    var me = this,
-      value = event.target.value;
+    const me = this;
+    const value = event.target.value;
 
     clearTimeout(this.timer);
     this.timer = setTimeout(function () {
