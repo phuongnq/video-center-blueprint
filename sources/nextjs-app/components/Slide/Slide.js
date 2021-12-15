@@ -91,8 +91,8 @@ class Slide extends Component {
 
     return (
       <div className="discover-slider__inner">
-        <Link className="discover-slider__link" href={slide.url_s}>
-          <div>
+        <Link href={slide.url_s}>
+          <a className="discover-slider__link">
             <div>
               <div
                 className="image discover-slider__inner--background discover-slider__inner--background-mobile"
@@ -166,7 +166,7 @@ class Slide extends Component {
               </div>
               }
             </div>
-          </div>
+          </a>
         </Link>
       </div>
     );

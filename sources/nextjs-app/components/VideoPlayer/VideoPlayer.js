@@ -64,17 +64,20 @@ class VideoPlayer extends Component {
             >
               <div id="videoPlayerAspect" className="global-video-player__aspect">
                 <div className="global-video-player__inner">
-                  <VideoJSPlayer
-                    video={this.props.videoInfo}
-                    videoStatus={this.props.videoStatus}
-                    dispatch={this.props.dispatch}
-                    controls={true}
-                  />
+                  {
+                    process.browser &&
+                    <VideoJSPlayer
+                      video={this.props.videoInfo}
+                      videoStatus={this.props.videoStatus}
+                      dispatch={this.props.dispatch}
+                      controls={true}
+                    />
+                  }
 
                   <Link
-                    className="fixed-player__link-overlay"
                     href={this.props.videoStatus.currentVideoUrl}
                   >
+                    <a className="fixed-player__link-overlay"></a>
                   </Link>
 
                   <button className="global-video-player__close" onClick={this.unloadVideo.bind(this)}>

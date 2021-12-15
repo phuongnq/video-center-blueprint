@@ -14,17 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { Component } from 'react';
 import dynamic from 'next/dynamic';
 import { setVideoStatus } from '../../actions/videoPlayerActions';
 import { updateDimensions } from './Common';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.min.css';
-
-dynamic(
-  () => import('videojs-youtube/dist/Youtube.min'),
-  { ssr: false }
-);
+import 'videojs-youtube/dist/Youtube.min';
 
 dynamic(
   () => import('dashjs/dist/dash.all.min'),
@@ -36,8 +32,28 @@ dynamic(
   { ssr: false }
 );
 
-function VideoJSPlayer(props) {
-  const setPlayerSrc = (player, video) => {
+class VideoJSPlayer extends Component {
+
+  componentDidMount() {
+    this.props.video && this.initPlayer();
+    window.addEventListener('resize', updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', updateDimensions);
+    // this.player.destroy();
+  }
+
+  componentWillReceiveProps(newProps) {
+    // new video Info -> load new manifestUri into player
+    if (this.props.video && newProps.video) {
+      if (this.props.video.id !== newProps.video.id) {
+        this.setPlayerSrc(this.player, newProps.video);
+      }
+    }
+  }
+
+  setPlayerSrc(player, video) {
     const contentType = video['content-type'];
     let src, type;
 
@@ -84,71 +100,61 @@ function VideoJSPlayer(props) {
         type
       });
     }
-  };
 
-  const initPlayer = () => {
+  }
+
+  initPlayer() {
     const player = videojs(this.refs.video, {
       controls: true,
       liveui: true
     });
 
-    setPlayerSrc(player, props.video);
+    this.setPlayerSrc(player, this.props.video);
     player.one('play', () => {
       updateDimensions();
     });
 
     const playPause = (type) => {
       const playing = (type === 'play');
-      props.dispatch(setVideoStatus({ ...props.videoStatus, playing }));
+      this.props.dispatch(setVideoStatus({ ...this.props.videoStatus, playing }));
     };
 
     ['play', 'pause'].forEach((e) => {
       player.on(e, () => playPause(e));
     });
 
-    props.dispatch(setVideoStatus({ ...props.videoStatus, playing: true }));
-  };
+    this.props.dispatch(setVideoStatus({ ...this.props.videoStatus, playing: true }));
+    this.player = player;
 
-  useEffect(() => {
-    props.video && initPlayer();
-    window.addEventListener('resize', updateDimensions);
-
-    return () => {
-      window.removeEventListener('resize', updateDimensions);
-    };
-  }, []);
-
-  // new video Info -> load new manifestUri into player
-  if (props.video && newProps.video) {
-    if (props.video.id !== newProps.video.id) {
-      setPlayerSrc(player, newProps.video);
-    }
   }
 
-  return (
-    <div
-      id="videoContainer"
-      className="player-container stream-player"
-      style={{ margin: '0 auto' }}
-    >
-      <video
-        className="video-js vjs-theme-vc"
-        controls
-        preload="auto"
-        width="640"
-        height="264"
-        autoPlay
-        style={{ width: '100%', height: '100%', margin: 'auto' }}
-        ref="video"
+  render() {
+    return (
+      <div
+        id="videoContainer"
+        className="player-container stream-player"
+        style={{ margin: '0 auto' }}
       >
-        <p className="vjs-no-js">
-          To view this video please enable JavaScript, and consider upgrading to a
-          web browser that
-          <a href="https://videojs.com/html5-video-support/" target="_blank" rel="noopener noreferrer">supports HTML5 video</a>
-        </p>
-      </video>
-    </div>
-  );
+        <video
+          className="video-js vjs-theme-vc"
+          controls
+          preload="auto"
+          width="640"
+          height="264"
+          autoPlay
+          style={{ width: '100%', height: '100%', margin: 'auto' }}
+          ref="video"
+        >
+          <p className="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a
+            web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank" rel="noopener noreferrer">supports HTML5 video</a>
+          </p>
+        </video>
+      </div>
+    );
+  }
 }
 
 export default VideoJSPlayer;
+

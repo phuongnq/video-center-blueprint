@@ -87,11 +87,13 @@ class VideoCategories extends Component {
               </h2>
 
               {categoryType === 'video-card' && showViewAll &&
-              <Link className="collection__item--link" href={viewAllURL}>
-                <span>
-                  <FontAwesomeIcon className="icon" icon={faAngleRight} />
-                  View All
-                </span>
+              <Link href={viewAllURL}>
+                <a className="collection__item--link">
+                  <span>
+                    <FontAwesomeIcon className="icon" icon={faAngleRight} />
+                    View All
+                  </span>
+                </a>
               </Link>
               }
 

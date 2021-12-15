@@ -32,7 +32,7 @@ class Video extends Component {
     this.props.setVideoStatus({
       ...this.props.videoStatus,
       docked: true,
-      currentVideoUrl: this.props.match.url
+      currentVideoUrl: this.props.url
     });
   }
 
@@ -41,11 +41,11 @@ class Video extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    var { match, searchResults } = this.props,
+    var { url, searchResults } = this.props,
       searchEntry = searchResults.entries[this.searchId],
       newSearchEntry = newProps.searchResults.entries[this.searchId];
 
-    if (match.url !== newProps.match.url) {
+    if (url !== newProps.url) {
       this.loadVideo(newProps);
       pageScrollTop();
     }
@@ -62,7 +62,7 @@ class Video extends Component {
   }
 
   loadVideo(props) {
-    var videoId = props.match.params.id;
+    var videoId = props.id;
 
     var query = SearchService.createQuery('elasticsearch');
     this.searchId = query.uuid;
@@ -179,7 +179,7 @@ class Video extends Component {
               <div className="video-details__links">
                 <div className="inline-button inline-button__text video-details__links-link">
                   <ModalDialog ref={(ref) => (this.shareDialog = ref)}>
-                    <input className="share-dialog__field" defaultValue={window.location.href} />
+                    <input className="share-dialog__field" defaultValue={window && window.location.href} />
 
                     <div className="share-dialog__social">
                       {/* http://sharingbuttons.io/ */}
@@ -187,7 +187,7 @@ class Video extends Component {
                       {/* <!-- Sharingbutton Facebook --> */}
                       <a
                         className="resp-sharing-button__link"
-                        href={`https://facebook.com/sharer/sharer.php?u=${window.location.href}`}
+                        href={`https://facebook.com/sharer/sharer.php?u=${window && window.location.href}`}
                         target="_blank" aria-label="Share on Facebook" rel="noopener noreferrer"
                       >
                         <div
@@ -210,7 +210,7 @@ class Video extends Component {
                       {/* <!-- Sharingbutton Twitter --> */}
                       <a
                         className="resp-sharing-button__link"
-                        href={`https://twitter.com/intent/tweet/?text=${video.title_s}&amp;url=${window.location.href}`}
+                        href={`https://twitter.com/intent/tweet/?text=${video.title_s}&amp;url=${window && window.location.href}`}
                         target="_blank" aria-label="Share on Twitter" rel="noopener noreferrer"
                       >
                         <div
@@ -233,7 +233,7 @@ class Video extends Component {
                       {/* <!-- Sharingbutton Google+ --> */}
                       <a
                         className="resp-sharing-button__link"
-                        href={`https://plus.google.com/share?url=${window.location.href}`}
+                        href={`https://plus.google.com/share?url=${window && window.location.href}`}
                         target="_blank" aria-label="Share on Google+" rel="noopener noreferrer"
                       >
                         <div
@@ -256,7 +256,7 @@ class Video extends Component {
                       {/* <!-- Sharingbutton E-Mail --> */}
                       <a
                         className="resp-sharing-button__link"
-                        href={`mailto:?subject=${video.title_s}&amp;body=${window.location.href}`}
+                        href={`mailto:?subject=${video.title_s}&amp;body=${window && window.location.href}`}
                         target="_self" aria-label="Share by E-Mail"
                       >
                         <div
