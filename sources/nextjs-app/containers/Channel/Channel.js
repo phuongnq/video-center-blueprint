@@ -31,13 +31,13 @@ class Channel extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (this.props.match.url !== newProps.match.url) {
+    if (this.props.name !== newProps.name) {
       this.getChannelInfo(newProps);
     }
   }
 
   getChannelInfo(props) {
-    var channelName = props.match.params.name;
+    const channelName = props.name;
 
     this.descriptorUrl = `/site/components/channel/${channelName}.xml`;
 

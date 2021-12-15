@@ -1,9 +1,8 @@
 import Search from '../../containers/Search/Search';
 
 export default function SearchPage(props) {
-  const { query } = props;
   return (
-    <Search query={query} />
+    <Search {...props} />
   );
 };
 
