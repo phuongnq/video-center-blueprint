@@ -14,7 +14,7 @@ import ErrorPage from './containers/Errors/errorPage';
 
 // The Main component renders one of the provided Routes
 class Router extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     //Need to locally set components in order to dinamically load them in router
     this.Channels = Channels;
     this.LiveEvents = LiveEvents;

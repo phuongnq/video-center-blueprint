@@ -18,7 +18,7 @@ class Channel extends Component {
     this.getChannelInfo(props);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.setVideoDocked(false);
   }
 
@@ -30,7 +30,7 @@ class Channel extends Component {
     this.props.setHeaderGhost(false);
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (this.props.name !== newProps.name) {
       this.getChannelInfo(newProps);
     }

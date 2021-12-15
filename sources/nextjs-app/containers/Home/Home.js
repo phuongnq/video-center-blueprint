@@ -9,7 +9,7 @@ import Slider from '../../components/Slider/Slider.js';
 import VideoCategories from '../../components/VideoCategories/VideoCategories.js';
 
 class Home extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.setVideoDocked(false);
 
     this.descriptorUrl = '/site/website/index.xml';

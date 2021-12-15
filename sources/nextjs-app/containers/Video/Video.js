@@ -28,7 +28,7 @@ class Video extends Component {
     this.loadVideo(props);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.setVideoStatus({
       ...this.props.videoStatus,
       docked: true,
@@ -40,7 +40,7 @@ class Video extends Component {
     this.props.setHeaderGhost(false);
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     var { url, searchResults } = this.props,
       searchEntry = searchResults.entries[this.searchId],
       newSearchEntry = newProps.searchResults.entries[this.searchId];

@@ -5,7 +5,7 @@ import { setVideoDocked } from '../../actions/videoPlayerActions';
 import VideoCategories from '../../components/VideoCategories/VideoCategories';
 
 class Channel extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.setVideoDocked(false);
   }
 
@@ -13,7 +13,7 @@ class Channel extends Component {
     this.getInfo(this.props);
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (this.props.params.categoryName !== newProps.params.categoryName) {
       this.getInfo(newProps);
     }

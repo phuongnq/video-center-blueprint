@@ -6,7 +6,7 @@ import { getDescriptor } from '@craftercms/redux';
 import FooterHolder from './FooterStyle';
 
 class Footer extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.footerUrl = '/site/components/footer.xml';
     this.props.getDescriptor(this.footerUrl);
   }

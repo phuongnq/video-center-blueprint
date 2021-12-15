@@ -54,7 +54,7 @@ class Channels extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.setVideoDocked(false);
   }
 

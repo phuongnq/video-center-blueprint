@@ -44,7 +44,7 @@ class VideoJSPlayer extends Component {
     // this.player.destroy();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     // new video Info -> load new manifestUri into player
     if (this.props.video && newProps.video) {
       if (this.props.video.id !== newProps.video.id) {

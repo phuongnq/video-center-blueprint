@@ -10,7 +10,7 @@ import { setVideoInfo, setVideoStatus } from '../../actions/videoPlayerActions';
 import VideoJSPlayer from './VideoJSPlayer';
 
 class VideoPlayer extends Component {
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     //Video info removed - unload video
     if (!newProps.videoInfo && this.props.videoInfo) {
       this.unloadVideo();

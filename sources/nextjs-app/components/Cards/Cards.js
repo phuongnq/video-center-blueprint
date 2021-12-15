@@ -15,7 +15,7 @@ class Cards extends Component {
     this.searchCards(this.props);
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.searchCards(newProps);
   }
 

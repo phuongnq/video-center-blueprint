@@ -23,7 +23,7 @@ class Search extends Component {
 
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.setVideoDocked(false);
     this.timer = null;
   }
@@ -37,7 +37,7 @@ class Search extends Component {
     this.appContentEl.classList.remove('search-content');
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     const value = newProps.query;
     const newCategories = this.setCategories(value);
 
