@@ -23,8 +23,6 @@ class Header extends Component {
   renderNavItems() {
     var rootId = '/';
 
-    console.log(this.props);
-
     return this.props.nav.childIds[rootId].map((id, i) => {
       var navItem = this.props.nav.entries[id];
 
@@ -57,7 +55,6 @@ class Header extends Component {
 
   render() {
     const { nav, descriptors } = this.props;
-    console.log(this.props);
     const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
     return (
@@ -102,7 +99,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = store => {
-  console.log(store);
   return ({
     nav: store.craftercms.navigation,
     descriptors: store.craftercms.descriptors.entries,

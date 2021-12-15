@@ -163,48 +163,50 @@ class Cards extends Component {
           return (
             <div className="static-grid__item" key={hit._id}>
               <div className="video-card video-card--has-description">
-                <Link className="video-card__link" href={`${componentUrl}${card.objectId}`}>
-                  <div>
+                <Link href={`${componentUrl}${card.objectId}`}>
+                  <a className="video-card__link">
                     <div>
-                      <div
-                        className="image video-card__image--background"
-                        style={{ background: 'transparent' }}
-                      >
+                      <div>
                         <div
-                          className="image__image"
-                          style={{ backgroundImage: `url(${card.thumbnail_s})` }}
+                          className="image video-card__image--background"
+                          style={{ background: 'transparent' }}
+                        >
+                          <div
+                            className="image__image"
+                            style={{ backgroundImage: `url(${card.thumbnail_s})` }}
+                          />
+                        </div>
+                        <video
+                          className="image preview-video" loop="" preload="auto"
+                          playsInline=""
                         />
                       </div>
-                      <video
-                        className="image preview-video" loop="" preload="auto"
-                        playsInline=""
-                      />
-                    </div>
-                    {videoStartDate > now &&
-                    <div className="video-card__date-info">
-                      <div className="day">
-                        {formattedDate.month} {formattedDate.monthDay}
+                      {videoStartDate > now &&
+                      <div className="video-card__date-info">
+                        <div className="day">
+                          {formattedDate.month} {formattedDate.monthDay}
+                        </div>
+                        <div className="time">
+                          {formattedDate.weekDay} @ {formattedDate.time} {formattedDate.timezone}
+                        </div>
                       </div>
-                      <div className="time">
-                        {formattedDate.weekDay} @ {formattedDate.time} {formattedDate.timezone}
+                      }
+                      <div className="video-card__content">
+                        <div className="video-card__time"> {card.length} </div>
+                        <h3
+                          className="heading video-card__heading heading--default heading--card"
+                        >{card.title_s}</h3>
+                        <div className="video-card__description"> {card.summary_s} </div>
+                        <div
+                          className="video-card__long-description"
+                        > {ReactHtmlParser(card.description_html)} </div>
+                        <div className="video-card__progress" style={{ width: '0%' }}></div>
+                      </div>
+                      <div className="video-card__play-button">
+                        <FontAwesomeIcon className="play-icon" icon={faPlay} />
                       </div>
                     </div>
-                    }
-                    <div className="video-card__content">
-                      <div className="video-card__time"> {card.length} </div>
-                      <h3
-                        className="heading video-card__heading heading--default heading--card"
-                      >{card.title_s}</h3>
-                      <div className="video-card__description"> {card.summary_s} </div>
-                      <div
-                        className="video-card__long-description"
-                      > {ReactHtmlParser(card.description_html)} </div>
-                      <div className="video-card__progress" style={{ width: '0%' }}></div>
-                    </div>
-                    <div className="video-card__play-button">
-                      <FontAwesomeIcon className="play-icon" icon={faPlay} />
-                    </div>
-                  </div>
+                  </a>
                 </Link>
               </div>
             </div>
@@ -215,16 +217,18 @@ class Cards extends Component {
           return (
             <div className="static-grid__item" key={hit._id}>
               <div className="channel-card-alt">
-                <Link className="channel-card-alt__link" href={`/channel/${url}`}>
-                  <div className="image channel-card-alt__image">
-                    <div
-                      className="image__image"
-                      style={{ backgroundImage: `url(${card.thumbnailImage_s})` }}
-                    >
-                      <div className="channel-card-alt__overlay"></div>
+                <Link href={`/channel/${url}`}>
+                  <a className="channel-card-alt__link">
+                    <div className="image channel-card-alt__image">
+                      <div
+                        className="image__image"
+                        style={{ backgroundImage: `url(${card.thumbnailImage_s})` }}
+                      >
+                        <div className="channel-card-alt__overlay"></div>
+                      </div>
                     </div>
-                  </div>
-                  <h2 className="channel-card-alt__heading"> {card['internal-name']} </h2>
+                    <h2 className="channel-card-alt__heading"> {card['internal-name']} </h2>
+                  </a>
                 </Link>
               </div>
             </div>
@@ -313,8 +317,10 @@ class CardContainer extends Component {
         {children}
       </div>
     ) : (
-      <Link className="live-events-item__link" href={`/stream/${card.objectId}/${videoName}`}>
-        {children}
+      <Link href={`/stream/${card.objectId}/${videoName}`}>
+        <a className="live-events-item__link">
+          {children}
+        </a>
       </Link>
     );
   }

@@ -73,7 +73,6 @@ class Channels extends Component {
 }
 
 export async function getServerSideProps(context) {
-  console.log(context);
   const props = {};
   return { props };
 }
