@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isNullOrUndefined } from 'util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment, faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import ReactHtmlParser from 'react-html-parser';
@@ -15,7 +14,7 @@ import Hero from '../../components/Hero/Hero';
 import ModalDialog from '../../components/Modal/Modal';
 import { setVideoInfo, setVideoStatus } from '../../actions/videoPlayerActions';
 import { setHeaderGhost } from '../../actions/headerActions';
-import { pageScrollTop } from '../../utils';
+import { pageScrollTop, isNullOrUndefined } from '../../utils';
 
 class Video extends Component {
   state = {

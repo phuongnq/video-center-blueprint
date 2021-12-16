@@ -3,12 +3,11 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import ReactHtmlParser from 'react-html-parser';
-import { isNullOrUndefined } from 'util';
 
 import { crafterConf } from '@craftercms/classes';
 import { SearchService } from '@craftercms/search';
 
-import { formatDate } from '../../utils';
+import { formatDate, isNullOrUndefined } from '../../utils';
 
 class Cards extends Component {
   componentDidMount() {

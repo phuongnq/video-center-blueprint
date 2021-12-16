@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isNullOrUndefined } from 'util';
 import { getDescriptor } from '@craftercms/redux';
 
+import { isNullOrUndefined } from '../../utils';
 import { setVideoDocked } from '../../actions/videoPlayerActions';
 import { setHeaderGhost } from '../../actions/headerActions';
-import Hero from '../../components/Hero/Hero.js';
-import VideoCategories from '../../components/VideoCategories/VideoCategories.js';
+import Hero from '../../components/Hero/Hero';
+import VideoCategories from '../../components/VideoCategories/VideoCategories';
 import NotFound from '../Errors/404';
 
 class Channel extends Component {

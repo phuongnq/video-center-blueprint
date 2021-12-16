@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Scrollspy from 'react-scrollspy';
 import Link from 'next/link';
-import { isNull, isNullOrUndefined } from 'util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 import VideoCategoriesHolder from './VideoCategoriesStyle';
 import Cards from '../Cards/Cards';
+import { isNullOrUndefined, isNull } from '../../utils';
 
 class VideoCategories extends Component {
   constructor(props) {

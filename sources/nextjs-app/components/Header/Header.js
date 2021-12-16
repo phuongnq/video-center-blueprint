@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { getDescriptor, getNav } from '@craftercms/redux';
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from '../../utils';
 
 import HeaderHolder from './HeaderStyle';
 import HeaderSearch from './HeaderSearch';

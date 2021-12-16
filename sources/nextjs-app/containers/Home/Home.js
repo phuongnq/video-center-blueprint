@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isNullOrUndefined } from 'util';
 import { getDescriptor } from '@craftercms/redux';
 
+import { isNullOrUndefined } from '../../utils';
 import { setVideoDocked } from '../../actions/videoPlayerActions';
 import { setHeaderGhost } from '../../actions/headerActions';
 import Slider from '../../components/Slider/Slider.js';

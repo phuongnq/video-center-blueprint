@@ -24,3 +24,11 @@ export function formatDate(studioDate) {
 
   return dateFormatted;
 }
+
+export const isNullOrUndefined = (value) => {
+  return value === null || value === undefined;
+}
+
+export const isNull = (value) => {
+  return value === null;
+}
