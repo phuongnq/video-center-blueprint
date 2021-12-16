@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { getDescriptor, getNav } from '@craftercms/redux';
@@ -6,25 +6,20 @@ import { isNullOrUndefined } from '../../utils';
 
 import HeaderHolder from './HeaderStyle';
 import HeaderSearch from './HeaderSearch';
-
-class Header extends Component {
-  constructor(props) {
-    super(props);
-
-    this.levelDescriptorUrl = '/site/website/crafter-level-descriptor.level.xml';
-
-    if (isNullOrUndefined(props.descriptors[this.levelDescriptorUrl])) {
-      this.props.getDescriptor(this.levelDescriptorUrl);
+function Header(props) {
+  const levelDescriptorUrl = '/site/website/crafter-level-descriptor.level.xml';
+  useEffect(() => {
+    if (isNullOrUndefined(props.descriptors[levelDescriptorUrl])) {
+      props.getDescriptor(levelDescriptorUrl);
     }
+    props.getNav('/site/website');
+  }, []);
 
-    this.props.getNav('/site/website');
-  }
-
-  renderNavItems() {
+  const renderNavItems = () => {
     var rootId = '/';
 
-    return this.props.nav.childIds[rootId].map((id, i) => {
-      var navItem = this.props.nav.entries[id];
+    return props.nav.childIds[rootId].map((id, i) => {
+      var navItem = props.nav.entries[id];
 
       return (
         <li key={i} className="navigation__item">
@@ -38,9 +33,9 @@ class Header extends Component {
         </li>
       );
     });
-  }
+  };
 
-  renderHeaderLogo(descriptor) {
+  const renderHeaderLogo = (descriptor) => {
     const logo = descriptor.component.siteLogo;
 
     return (
@@ -51,23 +46,22 @@ class Header extends Component {
         >Video Center</a>
       </Link>
     );
-  }
+  };
 
-  render() {
-    const { nav, descriptors } = this.props;
+  const { nav, descriptors } = props;
     const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
     return (
       <HeaderHolder>
         <header
           id="mainHeader"
-          className={'header ' + (this.props.headerGhost ? 'header--ghost ' : ' ') + (iOS ? 'ios' : '')}
+          className={'header ' + (props.headerGhost ? 'header--ghost ' : ' ') + (iOS ? 'ios' : '')}
         >
           <div className="header__container">
             <div className="header__overlay"></div>
 
-            {descriptors && descriptors[this.levelDescriptorUrl] &&
-            this.renderHeaderLogo(descriptors[this.levelDescriptorUrl])
+            {descriptors && descriptors[levelDescriptorUrl] &&
+            renderHeaderLogo(descriptors[levelDescriptorUrl])
             }
 
             <div className="header__navigation">
@@ -76,7 +70,7 @@ class Header extends Component {
                   {
                     nav
                     && nav.entries['/']
-                    && this.renderNavItems()
+                    && renderNavItems()
                   }
                 </ul>
               </nav>
@@ -90,7 +84,6 @@ class Header extends Component {
         </header>
       </HeaderHolder>
     );
-  }
 }
 
 const mapDispatchToProps = dispatch => ({
