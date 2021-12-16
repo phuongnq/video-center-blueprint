@@ -1,4 +1,4 @@
-import Search from '../../containers/Search/Search';
+import Search from '../containers/Search/Search';
 
 export default function SearchPage(props) {
   return (

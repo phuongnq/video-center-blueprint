@@ -117,6 +117,9 @@ function VideoCategories(props) {
 
   const handleScroll = () => {
     var stickyBar = document.getElementById('stickyBar');
+    if (!stickyBar) {
+      return;
+    }
     var stickyBarTop = stickyBar.getBoundingClientRect().top;
 
     if (stickyBarTop === 0) {
@@ -147,7 +150,6 @@ function VideoCategories(props) {
 
   return (
     <VideoCategoriesHolder>
-
       <div id="stickyBar" className="inline-nav__sticky">
         <nav className="inline-nav inline-nav--align-left">
           <div className="inline-nav__inner">

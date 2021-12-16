@@ -33,7 +33,7 @@ dynamic(
 );
 
 function VideoJSPlayer(props) {
-  let player;
+  const playerRef = useRef(null);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -45,11 +45,38 @@ function VideoJSPlayer(props) {
   }, []);
 
   useEffect(() => {
-    if (!player) {
+    const initPlayer = () => {
+      playerRef.current = videojs(videoRef.current, {
+        controls: true,
+        liveui: true
+      });
+
+      const player = playerRef.current;
+
+      setPlayerSrc(player, props.video);
+
+      player.one('play', () => {
+        updateDimensions();
+      });
+
+      const playPause = (type) => {
+        const playing = (type === 'play');
+        props.dispatch(setVideoStatus({ ...props.videoStatus, playing }));
+      };
+
+      ['play', 'pause'].forEach((e) => {
+        player.on(e, () => playPause(e));
+      });
+
+      props.dispatch(setVideoStatus({ ...props.videoStatus, playing: true }));
+    };
+
+    if (!playerRef.current) {
       props.video && initPlayer();
+    } else {
+      setPlayerSrc(playerRef.current, props.video);
     }
-    setPlayerSrc(player, props.video);
-  }, [props.video]);
+  }, [props, props.video]);
 
   const setPlayerSrc = (player, video) => {
     const contentType = video['content-type'];
@@ -98,29 +125,6 @@ function VideoJSPlayer(props) {
         type
       });
     }
-  };
-
-  const initPlayer = () => {
-    player = videojs(videoRef.current, {
-      controls: true,
-      liveui: true
-    });
-
-    setPlayerSrc(player, props.video);
-    player.one('play', () => {
-      updateDimensions();
-    });
-
-    const playPause = (type) => {
-      const playing = (type === 'play');
-      props.dispatch(setVideoStatus({ ...props.videoStatus, playing }));
-    };
-
-    ['play', 'pause'].forEach((e) => {
-      player.on(e, () => playPause(e));
-    });
-
-    props.dispatch(setVideoStatus({ ...props.videoStatus, playing: true }));
   };
 
   return (
