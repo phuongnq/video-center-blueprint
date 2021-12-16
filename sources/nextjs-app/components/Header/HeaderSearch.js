@@ -1,41 +1,35 @@
 import React, { Component } from 'react';
+import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import HeaderSearchModal from './HeaderSearchStyle';
 import InputSearch from './searchBox';
 
-class HeaderSearch extends Component {
+function HeaderSearch() {
+  const router = useRouter();
+  const [modalVisibility, setModalVisibility] = React.useState(false);
 
-  state = {
-    modalVisible: false
-  };
-
-  handleKeyPress = (e) => {
+  const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      this.setModalVisible(false);
-      window.location.href = `/search/${e.target.value}`;
+      setModalVisibility(false);
+      const url = `/search/${e.target.value}`;
+      router.push(url);
     }
-
   };
 
-  setModalVisible(modalVisible) {
-    this.setState({ modalVisible });
-  }
-
-  render() {
-    return (
+  return (
       <div className="header__search--container">
         <FontAwesomeIcon
           className="search__icon" icon={faSearch}
-          onClick={() => this.setModalVisible(true)}
+          onClick={() => setModalVisibility(true)}
         />
 
         <HeaderSearchModal
           style={{ top: 0 }}
-          visible={this.state.modalVisible}
-          onOk={() => this.setModalVisible(false)}
-          onCancel={() => this.setModalVisible(false)}
+          visible={modalVisibility}
+          onOk={() => setModalVisibility(false)}
+          onCancel={() => setModalVisibility(false)}
           footer={null}
           className="header__search--modal"
           width="100%"
@@ -46,15 +40,14 @@ class HeaderSearch extends Component {
           <FontAwesomeIcon className="search__icon" icon={faSearch} />
 
           <InputSearch
-            handleKeyPress={this.handleKeyPress}
+            handleKeyPress={handleKeyPress}
           />
-          <button className="ant-modal-close" onClick={() => this.setModalVisible(false)}>
+          <button className="ant-modal-close" onClick={() => setModalVisibility(false)}>
             <span className="ant-modal-close-x"></span>
           </button>
         </HeaderSearchModal>
       </div>
     );
-  }
 
 }
 
