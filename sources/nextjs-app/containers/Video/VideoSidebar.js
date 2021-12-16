@@ -1,33 +1,25 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 import SidebarHolder from './SidebarStyle';
 
-class VideoSidebar extends Component {
-  constructor(props) {
-    super(props);
-    this.element = document.createElement('div');
-    this.element.className = 'app-content__sidebar app-content__sidebar--animate app-content__sidebar--visible';
-  }
+function VideoSidebar() {
+  let element;
+  let sidebarContainer;
 
-  UNSAFE_componentWillMount() {
+  useEffect(() => {
+    element = document.createElement('div');
+    element.className = 'app-content__sidebar app-content__sidebar--animate app-content__sidebar--visible';
 
-  }
+    sidebarContainer = document.getElementById('app-content');
+    sidebarContainer.appendChild(element);
 
-  componentWillUnmount() {
-    this.sidebarContainer.removeChild(this.element);
-  }
+    return () => {
+      sidebarContainer.removeChild(element);
+    };
+  }, []);
 
-  componentDidMount() {
-    this.sidebarContainer = document.getElementById('app-content');
-    this.sidebarContainer.appendChild(this.element);
-  }
-
-  render() {
-    return ReactDOM.createPortal(this._renderSidebar(), this.element);
-  }
-
-  _renderSidebar() {
+  const _renderSidebar = () => {
     return (
       <SidebarHolder>
         <div className="video-sidebar">
@@ -93,12 +85,10 @@ class VideoSidebar extends Component {
           </div>
         </div>
       </SidebarHolder>
-
-      // <div className="video-sidebar__toggle">
-
-      // </div>
     );
   }
+
+  return ReactDOM.createPortal(_renderSidebar(), element);
 }
 
 export default VideoSidebar;

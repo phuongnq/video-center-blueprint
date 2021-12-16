@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { getDescriptor } from '@craftercms/redux';
 
 import FooterHolder from './FooterStyle';
 
-class Footer extends Component {
-  UNSAFE_componentWillMount() {
-    this.footerUrl = '/site/components/footer.xml';
-    this.props.getDescriptor(this.footerUrl);
-  }
+function Footer(props) {
+  const footerUrl = '/site/components/footer.xml';
+  useEffect(() => {
+    props.getDescriptor(footerUrl);
+  }, []);
 
-  renderFooterNav(nav) {
+  const renderFooterNav = (nav) => {
     if (Object.keys(nav).length === 0 && nav.constructor === Object) {
       return null;
     }
@@ -28,9 +28,9 @@ class Footer extends Component {
         </a>
       );
     });
-  }
+  };
 
-  renderFooterContent(descriptor) {
+  const renderFooterContent = (descriptor) => {
     const currentYear = new Date().getFullYear(),
       updatedCopyright = descriptor.component.copyrightLabel_t.replace('{year}', currentYear);
 
@@ -42,24 +42,22 @@ class Footer extends Component {
 
         <div className="footer__nav">
           {descriptor.component.nav_o &&
-          this.renderFooterNav(descriptor.component.nav_o)
+          renderFooterNav(descriptor.component.nav_o)
           }
         </div>
       </div>
     );
-  }
+  };
 
-  render() {
-    return (
-      <FooterHolder>
-        <footer className="footer">
-          {this.props.descriptors && this.props.descriptors[this.footerUrl] &&
-          this.renderFooterContent(this.props.descriptors[this.footerUrl])
-          }
-        </footer>
-      </FooterHolder>
-    );
-  }
+  return (
+    <FooterHolder>
+      <footer className="footer">
+        {props.descriptors && props.descriptors[footerUrl] &&
+        renderFooterContent(props.descriptors[footerUrl])
+        }
+      </footer>
+    </FooterHolder>
+  );
 }
 
 const mapDispatchToProps = dispatch => ({

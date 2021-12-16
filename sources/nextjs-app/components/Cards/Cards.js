@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
@@ -9,16 +9,14 @@ import { SearchService } from '@craftercms/search';
 
 import { formatDate, isNullOrUndefined } from '../../utils';
 
-class Cards extends Component {
-  componentDidMount() {
-    this.searchCards(this.props);
-  }
+function Cards(props) {
+  const [hits, setHits] = useState([]);
 
-  UNSAFE_componentWillReceiveProps(newProps) {
-    this.searchCards(newProps);
-  }
+  useEffect(() => {
+    searchCards(props);
+  }, [props]);
 
-  searchCards(props) {
+  const searchCards = (props) => {
     const self = this;
 
     var query = SearchService.createQuery('elasticsearch'),
@@ -137,17 +135,17 @@ class Cards extends Component {
     SearchService
       .search(query, crafterConf.getConfig())
       .subscribe(response => {
-        self.setState({ hits: response.hits });
+        setHits(response.hits);
       });
   }
 
-  renderCards() {
-    const { category } = this.props;
+  const renderCards = () => {
+    const { category } = props;
 
-    return this.state.hits.map((hit) => {
+    return hits.map((hit) => {
       var card = hit._source,
         componentUrl = card['content-type'] === '/component/stream' ? '/stream/' : '/video/',
-        categoryType = this.props.category.type ? this.props.category.type : 'video-card';
+        categoryType = props.category.type ? props.category.type : 'video-card';
 
       switch (categoryType) {
         case 'video-card':
@@ -277,52 +275,48 @@ class Cards extends Component {
           );
       }
     });
-  }
+  };
 
-  render() {
-    return (
-      <div className={this.props.category.type !== 'live-event-item' ? 'static-grid__items' : ''}>
-        {this.state && this.state.hits &&
-        this.renderCards()
-        }
-        {this.state && this.state.hits && this.state.hits.length === 0 &&
-        <div className="segment">
-          <div
-            style={{
-              textAlign: 'center',
-              fontSize: '3rem',
-              fontWeight: '700',
-              padding: '15rem 0px 25rem',
-              minHeight: '50vh'
-            }}
-          >
-            No results
-          </div>
+  return (
+    <div className={props.category.type !== 'live-event-item' ? 'static-grid__items' : ''}>
+      {hits &&
+        renderCards()
+      }
+      {hits && hits.length === 0 &&
+      <div className="segment">
+        <div
+          style={{
+            textAlign: 'center',
+            fontSize: '3rem',
+            fontWeight: '700',
+            padding: '15rem 0px 25rem',
+            minHeight: '50vh'
+          }}
+        >
+          No results
         </div>
-        }
       </div>
-    );
-  }
+      }
+    </div>
+  );
 }
 
-class CardContainer extends Component {
-  render() {
-    const { category, card, children } = this.props;
-    let videoName = card.title_s ? (card.title_s).toLowerCase().replace(/ /g, '-') : '';
-    videoName = encodeURIComponent(videoName);
+function CardContainer(props) {
+  const { category, card, children } = props;
+  let videoName = card.title_s ? (card.title_s).toLowerCase().replace(/ /g, '-') : '';
+  videoName = encodeURIComponent(videoName);
 
-    return category.noLinks ? (
-      <div className="live-events-item__link">
+  return category.noLinks ? (
+    <div className="live-events-item__link">
+      {children}
+    </div>
+  ) : (
+    <Link href={`/stream/${card.objectId}/${videoName}`}>
+      <a className="live-events-item__link">
         {children}
-      </div>
-    ) : (
-      <Link href={`/stream/${card.objectId}/${videoName}`}>
-        <a className="live-events-item__link">
-          {children}
-        </a>
-      </Link>
-    );
-  }
+      </a>
+    </Link>
+  );
 }
 
 export default Cards;

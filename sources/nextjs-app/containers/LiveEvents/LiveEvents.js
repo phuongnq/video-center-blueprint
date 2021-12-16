@@ -1,128 +1,120 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import VideoCategories from '../../components/VideoCategories/VideoCategories.js';
 import { setVideoDocked } from '../../actions/videoPlayerActions';
 
-class LiveEvents extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchId: '',
-      categories: [
-        {
-          key: 'active-events',
-          value: 'Active Events',
-          type: 'live-event-item',
-          query: {
-            'bool': {
-              'filter': [
-                {
-                  'match': {
-                    'content-type': '/component/stream'
-                  }
-                },
-                {
-                  'range': {
-                    'startDate_dt': {
-                      'lt': 'now'
-                    }
-                  }
-                },
-                {
-                  'range': {
-                    'endDate_dt': {
-                      'gt': 'now'
-                    }
-                  }
-                }
-              ]
+const  categories = [
+  {
+    key: 'active-events',
+    value: 'Active Events',
+    type: 'live-event-item',
+    query: {
+      'bool': {
+        'filter': [
+          {
+            'match': {
+              'content-type': '/component/stream'
             }
           },
-          sort: {
-            by: 'startDate_dt',
-            order: 'asc',
-            unmapped_type: 'date'
-          },
-          numResults: 6
-        },
-        {
-          key: 'upcoming-events',
-          value: 'Upcoming Events',
-          type: 'live-event-item',
-          query: {
-            'bool': {
-              'filter': [
-                {
-                  'match': {
-                    'content-type': '/component/stream'
-                  }
-                },
-                {
-                  'range': {
-                    'startDate_dt': {
-                      'gt': 'now'
-                    }
-                  }
-                }
-              ]
+          {
+            'range': {
+              'startDate_dt': {
+                'lt': 'now'
+              }
             }
           },
-          sort: {
-            by: 'startDate_dt',
-            order: 'asc',
-            unmapped_type: 'date'
-          },
-          numResults: 6
-        },
-        {
-          key: 'past-events',
-          value: 'Past Events',
-          type: 'live-event-item',
-          noLinks: true,
-          query: {
-            'bool': {
-              'filter': [
-                {
-                  'match': {
-                    'content-type': '/component/stream'
-                  }
-                },
-                {
-                  'range': {
-                    'endDate_dt': {
-                      'lt': 'now'
-                    }
-                  }
-                }
-              ]
+          {
+            'range': {
+              'endDate_dt': {
+                'gt': 'now'
+              }
+            }
+          }
+        ]
+      }
+    },
+    sort: {
+      by: 'startDate_dt',
+      order: 'asc',
+      unmapped_type: 'date'
+    },
+    numResults: 6
+  },
+  {
+    key: 'upcoming-events',
+    value: 'Upcoming Events',
+    type: 'live-event-item',
+    query: {
+      'bool': {
+        'filter': [
+          {
+            'match': {
+              'content-type': '/component/stream'
             }
           },
-          sort: {
-            by: 'endDate_dt',
-            order: 'desc',
-            unmapped_type: 'date'
+          {
+            'range': {
+              'startDate_dt': {
+                'gt': 'now'
+              }
+            }
+          }
+        ]
+      }
+    },
+    sort: {
+      by: 'startDate_dt',
+      order: 'asc',
+      unmapped_type: 'date'
+    },
+    numResults: 6
+  },
+  {
+    key: 'past-events',
+    value: 'Past Events',
+    type: 'live-event-item',
+    noLinks: true,
+    query: {
+      'bool': {
+        'filter': [
+          {
+            'match': {
+              'content-type': '/component/stream'
+            }
           },
-          numResults: 6
-        }
-      ]
-    };
+          {
+            'range': {
+              'endDate_dt': {
+                'lt': 'now'
+              }
+            }
+          }
+        ]
+      }
+    },
+    sort: {
+      by: 'endDate_dt',
+      order: 'desc',
+      unmapped_type: 'date'
+    },
+    numResults: 6
   }
+];
 
-  UNSAFE_componentWillMount() {
-    this.props.setVideoDocked(false);
-  }
+function LiveEvents(props) {
+  useEffect(() => {
+    props.setVideoDocked(false);
+  }, []);
 
-  render() {
-    return (
-      <div>
-        <VideoCategories
-          categories={this.state.categories}
-        >
-        </VideoCategories>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <VideoCategories
+        categories={categories}
+      >
+      </VideoCategories>
+    </div>
+  );
 }
 
 function mapStateToProps(store) {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -8,149 +8,137 @@ import VideoCategories from '../../components/VideoCategories/VideoCategories';
 import { setVideoDocked } from '../../actions/videoPlayerActions';
 import { isNullOrUndefined } from '../../utils';
 
-const WAIT_INTERVAL = 1000;
+const getNewCategories = (searchId) => {
+  let searchKeyword = isNullOrUndefined(searchId) ? '' : searchId;
 
-class Search extends Component {
+  const fields = ['title_t^1.5', 'description_html^1', 'tags_o.item.value_smv^1'];
+  const query = {};
+  query.filter = [
+    {
+      'terms': {
+        'content-type': ['/component/youtube-video', '/component/video-on-demand', '/component/stream']
+      }
+    }
+  ];
 
-  constructor(props) {
-    super(props);
+  // Check if the user is requesting an exact match with quotes
+  const regex = /.*("([^"]+)").*/;
+  const matcher = searchKeyword.match(regex);
 
-    this.searchId = this.query;
-
-    this.state = {
-      categories: this.setCategories(this.searchId)
-    };
-
-  }
-
-  UNSAFE_componentWillMount() {
-    this.props.setVideoDocked(false);
-    this.timer = null;
-  }
-
-  componentDidMount() {
-    this.appContentEl = document.getElementById('app-content');
-    this.appContentEl.classList.add('search-content');
-  }
-
-  componentWillUnmount() {
-    this.appContentEl.classList.remove('search-content');
-  }
-
-  UNSAFE_componentWillReceiveProps(newProps) {
-    const value = newProps.query;
-    const newCategories = this.setCategories(value);
-
-    this.searchInput.value = value ?? '';
-    this.setState({ categories: newCategories });
-  }
-
-  setCategories(searchId) {
-    let searchKeyword = isNullOrUndefined(searchId) ? '' : searchId;
-
-    const fields = ['title_t^1.5', 'description_html^1', 'tags_o.item.value_smv^1'];
-    let query = {};
-    query.filter = [
+  if (matcher) {
+    // Using must excludes any doc that doesn't match with the input from the user
+    query.must = [
       {
-        'terms': {
-          'content-type': ['/component/youtube-video', '/component/video-on-demand', '/component/stream']
+        'multi_match': {
+          'query': matcher[2],
+          'fields': fields,
+          'fuzzy_transpositions': false,
+          'auto_generate_synonyms_phrase_query': false
         }
       }
     ];
 
-    // Check if the user is requesting an exact match with quotes
-    const regex = /.*("([^"]+)").*/;
-    const matcher = searchKeyword.match(regex);
-
-    if (matcher) {
-      // Using must excludes any doc that doesn't match with the input from the user
-      query.must = [
-        {
-          'multi_match': {
-            'query': matcher[2],
-            'fields': fields,
-            'fuzzy_transpositions': false,
-            'auto_generate_synonyms_phrase_query': false
-          }
-        }
-      ];
-
-      // Remove the exact match to continue processing the user input
-      searchKeyword = searchKeyword.replace(matcher[1], '');
-    } else {
-      query.minimum_should_match = 1;
-    }
-
-    if (searchKeyword) {
-      // Using should makes it optional and each additional match will increase the score of the doc
-      query.should = [
-        {
-          'multi_match': {
-            'query': searchKeyword,
-            'fields': fields,
-            'type': 'phrase_prefix',
-            'boost': 1.5
-          }
-        },
-        {
-          'multi_match': {
-            'query': searchKeyword,
-            'fields': fields
-          }
-        }
-      ]
-    }
-
-    return [
-      {
-        key: 'top-results',
-        value: 'Top Results',
-        query: {
-          'bool': query
-        },
-        viewAll: false,
-        numResults: 90
-      }];
+    // Remove the exact match to continue processing the user input
+    searchKeyword = searchKeyword.replace(matcher[1], '');
+  } else {
+    query.minimum_should_match = 1;
   }
 
-  onChange(event) {
-    const me = this;
+  if (searchKeyword) {
+    // Using should makes it optional and each additional match will increase the score of the doc
+    query.should = [
+      {
+        'multi_match': {
+          'query': searchKeyword,
+          'fields': fields,
+          'type': 'phrase_prefix',
+          'boost': 1.5
+        }
+      },
+      {
+        'multi_match': {
+          'query': searchKeyword,
+          'fields': fields
+        }
+      }
+    ]
+  }
+
+  return [
+    {
+      key: 'top-results',
+      value: 'Top Results',
+      query: {
+        'bool': query
+      },
+      viewAll: false,
+      numResults: 90
+    }];
+}
+
+const WAIT_INTERVAL = 1000;
+
+function Search(props) {
+  let timer;
+  let appContentEl;
+  let searchInput;
+  const searchId = props.query;
+
+  const [categories, setCategories] = useState(getNewCategories(searchId));
+
+  useEffect(() => {
+    props.setVideoDocked(false);
+    timer = null;
+
+    appContentEl = document.getElementById('app-content');
+    appContentEl.classList.add('search-content');
+
+    return () => {
+      appContentEl.classList.remove('search-content');
+    };
+  }, []);
+
+  useEffect(() => {
+    const value = props.query;
+    const newCategories = getNewCategories(value);
+
+    searchInput.value = value ?? '';
+    setCategories(newCategories);
+  }, [props]);
+
+  const onChange = (event) => {
     const value = event.target.value;
 
-    clearTimeout(this.timer);
-    this.timer = setTimeout(function () {
-      var newCategories = me.setCategories(value);
-
-      me.setState({ categories: newCategories });
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      setCategories(getNewCategories(value));
     }, WAIT_INTERVAL);
 
   }
 
-  render() {
-    return (
-      <SearchHolder>
-        <div className="search-bar--sticky">
-          <div className="search-bar search-bar--visible">
-            <div className="search-bar__container">
-              <div className="search-bar__inner">
-                <div className="search-bar__icon">
-                  <FontAwesomeIcon className="search__icon" icon={faSearch} />
-                </div>
-                <input
-                  type="text" className="search-bar__input" placeholder="Start Typing..."
-                  ref={r => this.searchInput = r}
-                  defaultValue={this.searchId}
-                  onChange={this.onChange.bind(this)}
-                />
+  return (
+    <SearchHolder>
+      <div className="search-bar--sticky">
+        <div className="search-bar search-bar--visible">
+          <div className="search-bar__container">
+            <div className="search-bar__inner">
+              <div className="search-bar__icon">
+                <FontAwesomeIcon className="search__icon" icon={faSearch} />
               </div>
+              <input
+                type="text" className="search-bar__input" placeholder="Start Typing..."
+                ref={r => searchInput = r}
+                defaultValue={searchId}
+                onChange={onChange}
+              />
             </div>
           </div>
         </div>
+      </div>
 
-        <VideoCategories categories={this.state.categories} />
-      </SearchHolder>
-    );
-  }
+      <VideoCategories categories={categories} />
+    </SearchHolder>
+  );
 }
 
 function mapStateToProps(store) {

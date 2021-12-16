@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Scrollspy from 'react-scrollspy';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,33 +8,29 @@ import VideoCategoriesHolder from './VideoCategoriesStyle';
 import Cards from '../Cards/Cards';
 import { isNullOrUndefined, isNull } from '../../utils';
 
-class VideoCategories extends Component {
-  constructor(props) {
-    super(props);
+function VideoCategories(props) {
+  let scrollspy;
+  const sectionsScrollSpy = [];
+  props.categories.forEach((category, i) => {
+    sectionsScrollSpy.push('section-' + category.key);
+  });
 
-    this.sectionsScrollSpy = [];
-
-    props.categories.forEach((category, i) => {
-      this.sectionsScrollSpy.push('section-' + category.key);
-    });
-  }
-
-  renderCards(category) {
-    const isSearch = this.props.query && category.key === 'top-results';
+  const renderCards = (category) => {
+    const isSearch = props.query && category.key === 'top-results';
 
     if (isSearch) {
-      return <Cards category={category} query={this.props.query}></Cards>;
+      return <Cards category={category} query={props.query}></Cards>;
     } else {
-      if (this.props.exclude) {
-        return <Cards category={category} exclude={this.props.exclude}></Cards>;
+      if (props.exclude) {
+        return <Cards category={category} exclude={props.exclude}></Cards>;
       } else {
         return <Cards category={category}></Cards>;
       }
     }
   }
 
-  renderArticlesSections() {
-    return this.props.categories.map((category, i) => {
+  const renderArticlesSections = () => {
+    return props.categories.map((category, i) => {
       var gridElClass,
         categoryType = category.type ? category.type : 'video-card',
         showViewAll = isNullOrUndefined(category.viewAll) ? true : category.viewAll;
@@ -98,18 +94,17 @@ class VideoCategories extends Component {
               }
 
               <div className={gridElClass}>
-                {this.renderCards(category)}
+                {renderCards(category)}
               </div>
             </div>
           </div>
         </section>
       );
     });
-  }
+  };
 
-  renderCategoriesItems() {
-
-    return this.props.categories.map((category, i) => {
+  const renderCategoriesItems = () => {
+    return props.categories.map((category, i) => {
       return (
         <li key={i} className={'inline-nav__item inline-nav__item_0'}>
           <a href={'#section-' + category.key} className={'inline-nav__link'}>
@@ -118,9 +113,9 @@ class VideoCategories extends Component {
         </li>
       );
     });
-  }
+  };
 
-  handleScroll() {
+  const handleScroll = () => {
     var stickyBar = document.getElementById('stickyBar');
     var stickyBarTop = stickyBar.getBoundingClientRect().top;
 
@@ -129,10 +124,10 @@ class VideoCategories extends Component {
     } else {
       stickyBar.classList.remove('inline-nav__sticky--stuck');
     }
-  }
+  };
 
   //horizontal scroll to category (when mobile or many categories that overflow the bar space)
-  scrollMenuToCategory(sectionEl) {
+  const scrollMenuToCategory = (sectionEl) => {
     if (sectionEl) {
       var menuEl = document.querySelector('[href=\'#' + sectionEl.id + '\']'),
         menuContainer = document.querySelector('#stickyBar .inline-nav__ul'),
@@ -140,47 +135,44 @@ class VideoCategories extends Component {
 
       menuContainer.scrollLeft = scrollTo;
     }
-  }
+  };
 
-  componentDidMount() {
-    document.getElementsByClassName('app-content__main')[0].addEventListener('scroll', this.handleScroll);
-  }
+  useEffect(() => {
+    document.getElementsByClassName('app-content__main')[0].addEventListener('scroll', handleScroll);
 
-  componentWillUnmount() {
-    document.getElementsByClassName('app-content__main')[0].removeEventListener('scroll', this.handleScroll);
-  }
+    return () => {
+      document.getElementsByClassName('app-content__main')[0].removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
-  render() {
+  return (
+    <VideoCategoriesHolder>
 
-    return (
-      <VideoCategoriesHolder>
+      <div id="stickyBar" className="inline-nav__sticky">
+        <nav className="inline-nav inline-nav--align-left">
+          <div className="inline-nav__inner">
+            <Scrollspy
+              className="inline-nav__ul"
+              items={sectionsScrollSpy}
+              currentClassName="inline-nav__item--active"
+              rootEl={'.app-content__main'}
+              ref={node => (scrollspy = node)}
+              onUpdate={el => {
+                scrollMenuToCategory(el);
+              }}
+            >
+              {renderCategoriesItems()}
+            </Scrollspy>
+          </div>
+        </nav>
+      </div>
 
-        <div id="stickyBar" className="inline-nav__sticky">
-          <nav className="inline-nav inline-nav--align-left">
-            <div className="inline-nav__inner">
-              <Scrollspy
-                className="inline-nav__ul"
-                items={this.sectionsScrollSpy}
-                currentClassName="inline-nav__item--active"
-                rootEl={'.app-content__main'}
-                ref={node => (this.scrollspy = node)}
-                onUpdate={el => {
-                  this.scrollMenuToCategory(el);
-                }}
-              >
-                {this.renderCategoriesItems()}
-              </Scrollspy>
-            </div>
-          </nav>
-        </div>
+      <div className="content-container">
+        {renderArticlesSections()}
+      </div>
 
-        <div className="content-container">
-          {this.renderArticlesSections()}
-        </div>
-
-      </VideoCategoriesHolder>
-    );
-  }
+    </VideoCategoriesHolder>
+  );
 }
 
 export default VideoCategories;

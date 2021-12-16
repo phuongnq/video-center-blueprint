@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getDescriptor } from '@craftercms/redux';
 
@@ -9,44 +9,33 @@ import Hero from '../../components/Hero/Hero';
 import VideoCategories from '../../components/VideoCategories/VideoCategories';
 import NotFound from '../Errors/404';
 
-class Channel extends Component {
-  constructor(props) {
-    super(props);
+function Channel(props) {
+  const [descriptorUrl, setDescriptorUrl] = useState('');
 
-    //categories = new/featured, all videos, all streams, related
+  useEffect(() => {
+    getChannelInfo(props);
+    props.setVideoDocked(false);
+    props.setHeaderGhost(true);
 
-    this.getChannelInfo(props);
-  }
+    return () => {
+      props.setHeaderGhost(false);
+    };
+  }, []);
 
-  UNSAFE_componentWillMount() {
-    this.props.setVideoDocked(false);
-  }
+  useEffect(() => {
+    getChannelInfo(props);
+  }, [props.name]);
 
-  componentDidMount() {
-    this.props.setHeaderGhost(true);
-  }
-
-  componentWillUnmount() {
-    this.props.setHeaderGhost(false);
-  }
-
-  UNSAFE_componentWillReceiveProps(newProps) {
-    if (this.props.name !== newProps.name) {
-      this.getChannelInfo(newProps);
-    }
-  }
-
-  getChannelInfo(props) {
+  const getChannelInfo = (props) => {
     const channelName = props.name;
-
-    this.descriptorUrl = `/site/components/channel/${channelName}.xml`;
-
-    if (isNullOrUndefined(this.props.descriptors[this.descriptorUrl])) {
-      this.props.getDescriptor(this.descriptorUrl);
+    const descriptorUrl = `/site/components/channel/${channelName}.xml`;
+    if (isNullOrUndefined(props.descriptors[descriptorUrl])) {
+      props.getDescriptor(descriptorUrl);
     }
+    setDescriptorUrl(descriptorUrl);
   }
 
-  renderChannelContent(descriptor) {
+  const renderChannelContent = (descriptor) => {
     var component = descriptor.component,
       channelHero = [],
       channelContent = descriptor.component,
@@ -142,24 +131,22 @@ class Channel extends Component {
         </VideoCategories>
       </div>
     );
-  }
+  };
 
-  render() {
-    const { descriptors, descriptorsLoading } = this.props;
+  const { descriptors, descriptorsLoading } = props;
 
-    if ((descriptorsLoading[this.descriptorUrl] === false) && isNullOrUndefined(descriptors[this.descriptorUrl])) {
-      return (
-        <NotFound />
-      );
-    } else {
-      return (
-        <div>
-          {descriptors && descriptors[this.descriptorUrl] &&
-          this.renderChannelContent(descriptors[this.descriptorUrl])
-          }
-        </div>
-      );
-    }
+  if ((descriptorsLoading[descriptorUrl] === false) && isNullOrUndefined(descriptors[descriptorUrl])) {
+    return (
+      <NotFound />
+    );
+  } else {
+    return (
+      <div>
+        {descriptors && descriptors[descriptorUrl] &&
+        renderChannelContent(descriptors[descriptorUrl])
+        }
+      </div>
+    );
   }
 }
 

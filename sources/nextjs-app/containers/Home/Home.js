@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getDescriptor } from '@craftercms/redux';
 
@@ -8,39 +8,36 @@ import { setHeaderGhost } from '../../actions/headerActions';
 import Slider from '../../components/Slider/Slider.js';
 import VideoCategories from '../../components/VideoCategories/VideoCategories.js';
 
-class Home extends Component {
-  UNSAFE_componentWillMount() {
-    this.props.setVideoDocked(false);
+function Home(props) {
+  const descriptorUrl = '/site/website/index.xml';
+  useEffect(() => {
+    props.setVideoDocked(false);
 
-    this.descriptorUrl = '/site/website/index.xml';
-
-    if (isNullOrUndefined(this.props.descriptors[this.descriptorUrl])) {
-      this.props.getDescriptor(this.descriptorUrl);
+    if (isNullOrUndefined(props.descriptors[descriptorUrl])) {
+      props.getDescriptor(descriptorUrl);
     }
-  }
 
-  componentDidMount() {
-    this.props.setHeaderGhost(true);
-  }
+    props.setHeaderGhost(true);
 
-  componentWillUnmount() {
-    this.props.setHeaderGhost(false);
-  }
+    return () => {
+      props.setHeaderGhost(false);
+    };
+  }, []);
 
-  renderSlider(descriptor) {
+  const renderSlider = (descriptor) => {
     if (descriptor.page.slider_o.item) {
       return (
         <Slider
           data={descriptor.page.slider_o.item}
-          getDescriptor={this.props.getDescriptor}
-          descriptors={this.props.descriptors}
+          getDescriptor={props.getDescriptor}
+          descriptors={props.descriptors}
         >
         </Slider>
       );
     }
   }
 
-  renderHomeContent(descriptor) {
+  const renderHomeContent = (descriptor) => {
     var page = descriptor.page,
       categories = [
         {
@@ -132,25 +129,23 @@ class Home extends Component {
 
     return (
       <div>
-        {this.renderSlider(descriptor)}
+        {renderSlider(descriptor)}
 
         <VideoCategories categories={categories}>
         </VideoCategories>
       </div>
     );
-  }
+  };
 
-  render() {
-    var { descriptors } = this.props;
+  const { descriptors } = props;
 
-    return (
-      <div>
-        {descriptors && descriptors[this.descriptorUrl] &&
-        this.renderHomeContent(descriptors[this.descriptorUrl])
-        }
-      </div>
-    );
-  }
+  return (
+    <div>
+      {descriptors && descriptors[descriptorUrl] &&
+      renderHomeContent(descriptors[descriptorUrl])
+      }
+    </div>
+  );
 }
 
 function mapStateToProps(store) {
