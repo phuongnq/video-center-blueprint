@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { setVideoStatus } from '../../actions/videoPlayerActions';
 import { updateDimensions } from './Common';
@@ -32,28 +32,26 @@ dynamic(
   { ssr: false }
 );
 
-class VideoJSPlayer extends Component {
+function VideoJSPlayer(props) {
+  let player;
+  const videoRef = useRef(null);
 
-  componentDidMount() {
-    this.props.video && this.initPlayer();
+  useEffect(() => {
     window.addEventListener('resize', updateDimensions);
-  }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', updateDimensions);
-    // this.player.destroy();
-  }
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+    };
+  }, []);
 
-  UNSAFE_componentWillReceiveProps(newProps) {
-    // new video Info -> load new manifestUri into player
-    if (this.props.video && newProps.video) {
-      if (this.props.video.id !== newProps.video.id) {
-        this.setPlayerSrc(this.player, newProps.video);
-      }
+  useEffect(() => {
+    if (!player) {
+      props.video && initPlayer();
     }
-  }
+    setPlayerSrc(player, props.video);
+  }, [props.video]);
 
-  setPlayerSrc(player, video) {
+  const setPlayerSrc = (player, video) => {
     const contentType = video['content-type'];
     let src, type;
 
@@ -100,60 +98,55 @@ class VideoJSPlayer extends Component {
         type
       });
     }
+  };
 
-  }
-
-  initPlayer() {
-    const player = videojs(this.refs.video, {
+  const initPlayer = () => {
+    player = videojs(videoRef.current, {
       controls: true,
       liveui: true
     });
 
-    this.setPlayerSrc(player, this.props.video);
+    setPlayerSrc(player, props.video);
     player.one('play', () => {
       updateDimensions();
     });
 
     const playPause = (type) => {
       const playing = (type === 'play');
-      this.props.dispatch(setVideoStatus({ ...this.props.videoStatus, playing }));
+      props.dispatch(setVideoStatus({ ...props.videoStatus, playing }));
     };
 
     ['play', 'pause'].forEach((e) => {
       player.on(e, () => playPause(e));
     });
 
-    this.props.dispatch(setVideoStatus({ ...this.props.videoStatus, playing: true }));
-    this.player = player;
+    props.dispatch(setVideoStatus({ ...props.videoStatus, playing: true }));
+  };
 
-  }
-
-  render() {
-    return (
-      <div
-        id="videoContainer"
-        className="player-container stream-player"
-        style={{ margin: '0 auto' }}
+  return (
+    <div
+      id="videoContainer"
+      className="player-container stream-player"
+      style={{ margin: '0 auto' }}
+    >
+      <video
+        className="video-js vjs-theme-vc"
+        controls
+        preload="auto"
+        width="640"
+        height="264"
+        autoPlay
+        style={{ width: '100%', height: '100%', margin: 'auto' }}
+        ref={videoRef}
       >
-        <video
-          className="video-js vjs-theme-vc"
-          controls
-          preload="auto"
-          width="640"
-          height="264"
-          autoPlay
-          style={{ width: '100%', height: '100%', margin: 'auto' }}
-          ref="video"
-        >
-          <p className="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a
-            web browser that
-            <a href="https://videojs.com/html5-video-support/" target="_blank" rel="noopener noreferrer">supports HTML5 video</a>
-          </p>
-        </video>
-      </div>
-    );
-  }
+        <p className="vjs-no-js">
+          To view this video please enable JavaScript, and consider upgrading to a
+          web browser that
+          <a href="https://videojs.com/html5-video-support/" target="_blank" rel="noopener noreferrer">supports HTML5 video</a>
+        </p>
+      </video>
+    </div>
+  );
 }
 
 export default VideoJSPlayer;
