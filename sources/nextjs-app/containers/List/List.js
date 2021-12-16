@@ -1,25 +1,21 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { setVideoDocked } from '../../actions/videoPlayerActions';
 import VideoCategories from '../../components/VideoCategories/VideoCategories';
 
-class Channel extends Component {
-  UNSAFE_componentWillMount() {
-    this.props.setVideoDocked(false);
-  }
+function Channel(props) {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    props.setVideoDocked(false);
+    getInfo(props);
+  }, []);
 
-  componentDidMount() {
-    this.getInfo(this.props);
-  }
+  useEffect(() => {
+    getInfo(props);
+  }, [props.params.categoryName]);
 
-  UNSAFE_componentWillReceiveProps(newProps) {
-    if (this.props.params.categoryName !== newProps.params.categoryName) {
-      this.getInfo(newProps);
-    }
-  }
-
-  getInfo(props) {
+  const getInfo = (props) => {
     var params = props.params,
       category = {
         key: '',
@@ -47,25 +43,19 @@ class Channel extends Component {
       category.sort = JSON.parse(params.sort);
     }
 
-    this.setState({
-      categories: [
-        category
-      ]
-    });
-  }
+    setCategories([category]);
+  };
 
-  render() {
-    return (
-      <div>
-        {this.state && this.state.categories &&
-        <VideoCategories
-          categories={this.state.categories}
-        >
-        </VideoCategories>
-        }
-      </div>
-    );
-  }
+  return (
+    <div>
+      {categories &&
+      <VideoCategories
+        categories={categories}
+      >
+      </VideoCategories>
+      }
+    </div>
+  );
 }
 
 function mapStateToProps(store) {
