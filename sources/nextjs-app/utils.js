@@ -34,7 +34,7 @@ export const isNull = (value) => {
 }
 
 export function absoluteUrl(req, setLocalhost) {
-  const protocol = 'https:';
+  let protocol = 'https:';
   const host = req ?
      req.headers['x-forwarded-host'] || req.headers['host'] :
      window.location.host;

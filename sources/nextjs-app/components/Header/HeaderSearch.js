@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -35,7 +35,6 @@ function HeaderSearch() {
           width="100%"
           closable={false}
           destroyOnClose={true}
-          ref={node => (this.searchModal = node)}
         >
           <FontAwesomeIcon className="search__icon" icon={faSearch} />
 
