@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment, faShareAlt } from '@fortawesome/free-solid-svg-icons';
@@ -158,8 +158,7 @@ class Video extends Component {
     this.shareDialog.showModal();
   }
 
-  renderDetailsSection(video) {
-    const window = process.browser ? window : {};
+  renderDetailsSection(video, fullUrl) {
     return (
       <div>
         <div className="segment segment--dark">
@@ -178,7 +177,7 @@ class Video extends Component {
               <div className="video-details__links">
                 <div className="inline-button inline-button__text video-details__links-link">
                   <ModalDialog ref={(ref) => (this.shareDialog = ref)}>
-                    <input className="share-dialog__field" defaultValue={window && window.location.href} />
+                    <input className="share-dialog__field" defaultValue={fullUrl} />
 
                     <div className="share-dialog__social">
                       {/* http://sharingbuttons.io/ */}
@@ -186,7 +185,7 @@ class Video extends Component {
                       {/* <!-- Sharingbutton Facebook --> */}
                       <a
                         className="resp-sharing-button__link"
-                        href={`https://facebook.com/sharer/sharer.php?u=${window && window.location.href}`}
+                        href={`https://facebook.com/sharer/sharer.php?u=${fullUrl}`}
                         target="_blank" aria-label="Share on Facebook" rel="noopener noreferrer"
                       >
                         <div
@@ -209,7 +208,7 @@ class Video extends Component {
                       {/* <!-- Sharingbutton Twitter --> */}
                       <a
                         className="resp-sharing-button__link"
-                        href={`https://twitter.com/intent/tweet/?text=${video.title_s}&amp;url=${window && window.location.href}`}
+                        href={`https://twitter.com/intent/tweet/?text=${video.title_s}&amp;url=${fullUrl}`}
                         target="_blank" aria-label="Share on Twitter" rel="noopener noreferrer"
                       >
                         <div
@@ -232,7 +231,7 @@ class Video extends Component {
                       {/* <!-- Sharingbutton Google+ --> */}
                       <a
                         className="resp-sharing-button__link"
-                        href={`https://plus.google.com/share?url=${window && window.location.href}`}
+                        href={`https://plus.google.com/share?url=${fullUrl}`}
                         target="_blank" aria-label="Share on Google+" rel="noopener noreferrer"
                       >
                         <div
@@ -255,7 +254,7 @@ class Video extends Component {
                       {/* <!-- Sharingbutton E-Mail --> */}
                       <a
                         className="resp-sharing-button__link"
-                        href={`mailto:?subject=${video.title_s}&amp;body=${window && window.location.href}`}
+                        href={`mailto:?subject=${video.title_s}&amp;body=${fullUrl}`}
                         target="_self" aria-label="Share by E-Mail"
                       >
                         <div
@@ -315,7 +314,7 @@ class Video extends Component {
   }
 
   render() {
-    var { videoInfo } = this.props;
+    const { videoInfo, fullUrl } = this.props;
     return (
       <div>
         {this.state.notFound && <NotFound />}
@@ -333,7 +332,7 @@ class Video extends Component {
           }
 
           {videoInfo &&
-          this.renderDetailsSection(videoInfo)
+          this.renderDetailsSection(videoInfo, fullUrl)
           }
 
           {this.state && this.state.categories &&
