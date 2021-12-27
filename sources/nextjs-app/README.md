@@ -32,7 +32,7 @@ To learn more about CrafterCMS, take a look at the following resources:
 
 - [Documentation](https://docs.craftercms.org/) - latest stable and next version of Crafter CMS.
 - [Slack Community](https://join.slack.com/t/craftercms/shared_invite/enQtNDg0NzI3NzA0NjMwLWZmMGQzMDViMzA5NDE1YjMzM2M1N2JlOWJlZDA1MjA2MGJlZjgzNDVlMmI5ODQxNmNjMWQ3NzA5ZWNkN2UxOWE)
-- [Discord Community](https://groups.google.com/forum/#!forum/craftercms)
+- [Discord Community](https://discord.gg/b2cTvMuffq)
 - [Stackoverflow](https://stackoverflow.com/questions/tagged/crafter-cms)
 
 To learn more about Next.js, take a look at the following resources:
