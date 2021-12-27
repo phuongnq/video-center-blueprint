@@ -12,6 +12,7 @@ import VideoPlayer from '../components/VideoPlayer/VideoPlayer';
 
 import '../index.css';
 import 'antd/dist/antd.css';
+import '../components/VideoPlayer/videojs-theme.css';
 
 function App({ Component, pageProps }) {
 
