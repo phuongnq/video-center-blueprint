@@ -104,7 +104,7 @@ class VideoJSPlayer extends Component {
   }
 
   initPlayer() {
-    const player = videojs(this.refs.video, {
+    const player = videojs(this.videoRef, {
       controls: true,
       liveui: true
     });
@@ -143,7 +143,7 @@ class VideoJSPlayer extends Component {
           height="264"
           autoPlay
           style={{ width: '100%', height: '100%', margin: 'auto' }}
-          ref="video"
+          ref={(ref) => { this.videoRef = ref; }}
         >
           <p className="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
